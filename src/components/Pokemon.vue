@@ -10,6 +10,22 @@
       {{page}}
       <v-btn v-on:click.native="next">Next</v-btn>
     </div>
+    <v-text-field
+      v-if="searchByName==true"
+      name="poke-name"
+      label="Search by name"
+      value="mewtwo"
+      class="input-group--focused">
+    </v-text-field>
+    <v-text-field
+      v-else
+      name="poke-name"
+      label="Search by id/number"
+      value="150"
+      class="input-group--focused">
+    </v-text-field>
+    <v-btn v-on:click.native="searchBy">Search by Pokemon {{searchByNameText}} instead</v-btn>
+    <v-progress-circular v-if="searching==true" indeterminate class="primary--text"></v-progress-circular>
     <selected v-if="selectedData != null"
       :height="selectedData.height"
       :weight="selectedData.weight"
@@ -43,13 +59,18 @@ export default {
       selected: null,
       selectedData: null,
       pokes: null,
+      searchByName: true,
+      searchByNameText: "name",
+      hasNext: true,
       offset: 0,
+      searching: false,
       page: 0
     }
   },
   methods: {
     which(){
       var self = this
+      this.searching = true
       console.log("pressed")
       console.log(this.selected)
       if(this.selected === "hi")
@@ -61,14 +82,25 @@ export default {
         self.selectedData = data
         console.log(self.selectedData.name)
         console.log(self.selectedData.weight)
+        self.searching =false
       })
     },
+    searchBy(){
+      this.searchByName = !this.searchByName
+      if(this.searchByNameText ==="name")
+        this.searchByNameText = "id"
+      else
+        this.searchByNameText = "name"
+    },
     next(){
+      if(!this.hasNext)
+        return
       this.offset+=20
       this.page++
       this.selected = null
       var self = this
       $.get('http://pokeapi.co/api/v2/pokemon/?offset='+self.offset, function (data) {
+        self.hasNext = data.next
         console.log("success")
         self.pokes = data.results
       })
