@@ -19,6 +19,7 @@
       value="mewtwo"
       class="input-group--focused">
     </v-text-field>
+    <div v-if="error_message != null">{{error_message}}</div>
     <v-btn v-on:click.native="search">Search </v-btn>
     <!-- <v-btn v-on:click.native="searchBy">Search by Pokemon {{searchByNameText}} instead</v-btn> -->
     <v-progress-circular v-if="searching==true" indeterminate class="primary--text"></v-progress-circular>
@@ -56,6 +57,7 @@ export default {
       message: "",
       selectedData: null,
       pokes: null,
+      error_message: null,
       searchByName: true,
       searchByNameText: "name",
       hasNext: true,
@@ -84,8 +86,21 @@ export default {
     },
     search(){
       var self = this
+      if (isNaN(this.message)){
+        var name = this.message.toLowerCase()
+        this.error_message = null
+      }else {
+        if (this.message > 721 || this.message < 1){
+          //raise error
+          this.error_message = "Pokemon doesn't exist"
+          return
+        }else{
+          var name = this.message
+          this.error_message = null
+      }}
+
       // console.log(this.message)
-      $.get('http://pokeapi.co/api/v2/pokemon/'+this.message, function (data) {
+      $.get('http://pokeapi.co/api/v2/pokemon/'+name, function (data) {
         console.log("success")
         console.log(data)
         self.selectedData = data
