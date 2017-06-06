@@ -109,7 +109,7 @@ export default {
     },
     randomPokemon(){
       var self = this
-      var num = Math.floor(Math.random() * 811) + 1
+      var num = Math.floor(Math.random() * 721) + 1
       $.get('http://pokeapi.co/api/v2/pokemon/'+num, function (data) {
         console.log("success")
         console.log(data)
