@@ -5,27 +5,22 @@
     </div>
     <p v-if="selected==null">Click a pokemon</p>
     <v-btn v-else v-on:click.native="which">Search for {{this.selected}}??</v-btn>
+    <v-btn v-on:click.native="randomPokemon">I am feeling lucky! </v-btn>
     <div>
       <v-btn v-on:click.native="prev">Prev</v-btn>
       {{page}}
       <v-btn v-on:click.native="next">Next</v-btn>
     </div>
-    <v-text-field v-model="message"
-      v-if="searchByName==true"
+    <v-text-field
+      v-on:keyup.enter.native="search"
+      v-model="message"
       name="poke-name"
       label="Search by name"
       value="mewtwo"
       class="input-group--focused">
     </v-text-field>
-    <v-text-field v-model="message"
-      v-else
-      name="poke-name"
-      label="Search by id/number"
-      value="150"
-      class="input-group--focused">
-    </v-text-field>
-    <v-btn v-on:click.native="searchPokemon"> Search </v-btn>
-    <v-btn v-on:click.native="searchBy">Search by Pokemon {{searchByNameText}} instead</v-btn>
+    <v-btn v-on:click.native="search">Search </v-btn>
+    <!-- <v-btn v-on:click.native="searchBy">Search by Pokemon {{searchByNameText}} instead</v-btn> -->
     <v-progress-circular v-if="searching==true" indeterminate class="primary--text"></v-progress-circular>
     <selected v-if="selectedData != null"
       :height="selectedData.height"
@@ -87,17 +82,20 @@ export default {
         self.searching =false
       })
     },
-    searchBy(){
-      this.searchByName = !this.searchByName
-      if(this.searchByNameText ==="name")
-        this.searchByNameText = "id"
-      else
-        this.searchByNameText = "name"
-    },
-    searchPokemon(){
+    search(){
       var self = this
       // console.log(this.message)
       $.get('http://pokeapi.co/api/v2/pokemon/'+this.message, function (data) {
+        console.log("success")
+        console.log(data)
+        self.selectedData = data
+        self.searching =false
+      })
+    },
+    randomPokemon(){
+      var self = this
+      var num = Math.floor(Math.random() * 811) + 1
+      $.get('http://pokeapi.co/api/v2/pokemon/'+num, function (data) {
         console.log("success")
         console.log(data)
         self.selectedData = data
