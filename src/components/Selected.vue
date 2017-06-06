@@ -3,14 +3,19 @@
     <!-- This is the selected pokemon -->
     <v-card>
       {{this.name}}
-      height: {{this.height}}
-      weight: {{this.weight}}
+      Height: {{this.height}}
+      Weight: {{this.weight}}
+      Types: <span v-for="item in types">{{item.type.name}} </span>
       <!-- {{this.image}} -->
       <!--  disabled until hot linking is figured out-->
-      <img v-if="showImage==true" :src="image"></img>
-      <img v-if="showShiny==true" :src="shiny"></img>
-      <v-btn v-on:click.native="imageBtn">Toggle Sprite</v-btn>
-      <v-btn v-on:click.native="shinyBtn">Toggle Shiny</v-btn>
+      <div>
+        <v-btn v-on:click.native="imageBtn">Toggle Sprite</v-btn>
+        <v-btn v-on:click.native="shinyBtn">Toggle Shiny</v-btn>
+      </div>
+      <div>
+        <img v-if="showImage==true" :src="image"></img>
+        <img v-if="showShiny==true" :src="shiny"></img>
+      </div>
     </v-card>
   </div>
 </template>
@@ -24,6 +29,8 @@ export default {
     'name',
     'height',
     'weight',
+    'types',
+    'searching',
   ],
   data () {
     return {
