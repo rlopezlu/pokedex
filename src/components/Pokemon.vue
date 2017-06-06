@@ -10,20 +10,21 @@
       {{page}}
       <v-btn v-on:click.native="next">Next</v-btn>
     </div>
-    <v-text-field
+    <v-text-field v-model="message"
       v-if="searchByName==true"
       name="poke-name"
       label="Search by name"
       value="mewtwo"
       class="input-group--focused">
     </v-text-field>
-    <v-text-field
+    <v-text-field v-model="message"
       v-else
       name="poke-name"
       label="Search by id/number"
       value="150"
       class="input-group--focused">
     </v-text-field>
+    <v-btn v-on:click.native="searchPokemon"> Search </v-btn>
     <v-btn v-on:click.native="searchBy">Search by Pokemon {{searchByNameText}} instead</v-btn>
     <v-progress-circular v-if="searching==true" indeterminate class="primary--text"></v-progress-circular>
     <selected v-if="selectedData != null"
@@ -57,6 +58,7 @@ export default {
   data () {
     return {
       selected: null,
+      message: "",
       selectedData: null,
       pokes: null,
       searchByName: true,
@@ -73,7 +75,7 @@ export default {
       this.searching = true
       console.log("pressed")
       console.log(this.selected)
-      if(this.selected === "hi")
+      if(this.selected === null)
         return;
       console.log("fetching poke data")
       // $.get('http://pokeapi.co/api/v2/pokemon/bulbasaur/', function (data) {
@@ -91,6 +93,16 @@ export default {
         this.searchByNameText = "id"
       else
         this.searchByNameText = "name"
+    },
+    searchPokemon(){
+      var self = this
+      // console.log(this.message)
+      $.get('http://pokeapi.co/api/v2/pokemon/'+this.message, function (data) {
+        console.log("success")
+        console.log(data)
+        self.selectedData = data
+        self.searching =false
+      })
     },
     next(){
       if(!this.hasNext)
